@@ -386,56 +386,41 @@ img { display: block; max-width: 100%; }
 .nav-phone-link svg { color: var(--m-blue); }
 .nav-phone-link:hover { color: var(--m-blue); }
 
+/* Hamburger Açma Butonu (☰) */
 .ham-btn {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
-  padding: 6px;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-dim);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ham-btn:hover,
+.ham-btn:active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--m-blue);
 }
 .ham-btn span {
   display: block;
-  width: 24px;
+  width: 22px;
   height: 2.5px;
   background: var(--text-white);
   border-radius: 2px;
   transition: 0.25s;
 }
-.ham-btn.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); background: var(--m-red); }
-.ham-btn.open span:nth-child(2) { opacity: 0; }
-.ham-btn.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); background: var(--m-blue); }
 
-.mobile-menu-drawer {
-  display: none;
-  flex-direction: column;
-  background: #141417;
-  border-top: 1px solid var(--border-dim);
-}
-.mobile-menu-drawer.open { display: flex; }
-.mobile-menu-drawer button,
-.mobile-menu-drawer a {
-  padding: 16px 24px;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text-muted);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: left;
-  text-transform: uppercase;
-  transition: color 0.2s, background 0.2s;
-}
-.mobile-menu-drawer button:hover,
-.mobile-menu-drawer a:hover {
-  color: var(--text-white);
-  background: rgba(0, 163, 224, 0.08);
-}
-.mobile-menu-drawer button.active {
-  color: var(--m-blue);
-  border-left: 4px solid var(--m-red);
-}
-
-@media (max-width: 960px) {
-  .nav-tabs { display: none; }
-  .nav-phone-link { display: none; }
-  .ham-btn { display: flex; }
+@media (max-width: 992px) {
+  .nav-tabs { display: none !important; }
+  .nav-phone-link { display: none !important; }
+  .nav-actions .btn-m-action { display: none !important; }
+  .ham-btn { display: flex !important; }
 }
 
 /* ================================================================
@@ -1206,38 +1191,185 @@ footer {
 .m-wa-btn:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(37, 211, 102, 0.6); }
 .m-wa-btn svg { width: 28px; height: 28px; fill: #FFFFFF; }
 
-/* Mobil Yatay Kaydırılabilir Menü (Swipeable Tabs) */
+/* ================================================================
+   TAM EKRAN MOBİL OVERLAY MENÜ (FULL SCREEN OVERLAY)
+================================================================ */
+.mobile-overlay-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(13, 13, 16, 0.98);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(.4, 0, .2, 1), visibility 0.3s cubic-bezier(.4, 0, .2, 1);
+  background-image: 
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.018) 0px, rgba(255, 255, 255, 0.018) 1px, transparent 1px, transparent 6px),
+    repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0px, rgba(0, 0, 0, 0.65) 2px, transparent 2px, transparent 6px),
+    linear-gradient(180deg, rgba(16, 16, 20, 0.98) 0%, #0d0d10 100%);
+}
+
+.mobile-overlay-menu.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Kapatma Butonu (Sağ Üstte Belirgin X) */
+.overlay-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-dim);
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, color 0.2s, border-color 0.2s;
+  z-index: 100000;
+}
+.overlay-close-btn:hover,
+.overlay-close-btn:active {
+  background: rgba(228, 0, 43, 0.2);
+  border-color: var(--m-red);
+  color: var(--m-red);
+  transform: rotate(90deg);
+}
+
+/* Üst Rozet */
+.overlay-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.overlay-brand-badge .m-dots {
+  display: flex;
+  gap: 3px;
+}
+.overlay-brand-badge .m-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.overlay-brand-badge .m-dots span:nth-child(1) { background: var(--m-blue); }
+.overlay-brand-badge .m-dots span:nth-child(2) { background: var(--m-navy); }
+.overlay-brand-badge .m-dots span:nth-child(3) { background: var(--m-red); }
+
+/* Ortalanmış İçerik Kapsayıcısı */
+.overlay-menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+/* Menü Butonları */
+.overlay-nav-btn {
+  font-family: var(--font-race);
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.2s, transform 0.2s;
+  padding: 6px 16px;
+  border-radius: 6px;
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+.overlay-nav-btn:hover,
+.overlay-nav-btn:active {
+  color: var(--text-white);
+  transform: scale(1.05);
+}
+.overlay-nav-btn.active {
+  color: var(--text-white);
+}
+.overlay-nav-btn.active::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  background: var(--m-stripe-solid);
+  margin: 6px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* Ayırıcı */
+.overlay-divider {
+  width: 72px;
+  height: 3px;
+  background: var(--m-stripe-solid);
+  margin: 8px 0;
+  border-radius: 2px;
+}
+
+/* Aksiyon Butonu */
+.overlay-action-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 16px;
+  font-size: 14px;
+}
+
+.overlay-phone-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--m-blue);
+  padding: 8px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.overlay-phone-btn:hover {
+  color: var(--text-white);
+}
+
 @media (max-width: 768px) {
   .nav-wrapper {
-    height: auto !important;
-    padding: 12px 16px 6px 16px !important;
-    flex-wrap: wrap !important;
+    height: 68px;
+    padding: 0 18px;
   }
-  .nav-tabs {
-    display: flex !important;
-    width: 100% !important;
-    order: 3 !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    justify-content: flex-start !important;
-    padding: 0 10px 10px 10px !important;
-    margin-bottom: 15px !important;
+  .m-logo-svg {
+    height: 32px;
   }
-  /* Scrollbar (kaydırma çubuğu) gizlensin ama kaydırma çalışsın */
-  .nav-tabs::-webkit-scrollbar {
-    display: none;
+  .m-sub-text .owner {
+    font-size: 12px;
   }
-  /* Butonların sıkışmasını engelle */
-  .nav-tab-btn {
-    flex: 0 0 auto !important;
-    margin-right: 8px !important;
-    font-size: 14px !important;
-    padding: 8px 14px !important;
-  }
-  /* Eski açılır menüyü ve butonunu tamamen devreden çıkar */
-  #menuToggle, .menu-toggle, #mobileDrawer, .ham-btn {
-    display: none !important;
+  .m-sub-text .specialist {
+    font-size: 8px;
   }
 }
 </style>
@@ -1290,15 +1422,43 @@ footer {
     </div>
   </div>
 
-  <!-- Mobil Çekmece Menü -->
-  <div class="mobile-menu-drawer" id="mobileDrawer">
-    <button data-view="hero" class="active">Ana Sayfa</button>
-    <button data-view="brands">Hizmet Verdiğimiz Markalar</button>
-    <button data-view="services">Hizmetlerimiz</button>
-    <button data-view="why">Neden Biz?</button>
-    <button data-view="media">Sosyal Medya</button>
-    <button data-view="contact">İletişim, Konum & Randevu</button>
-    <a href="tel:+905306124111" style="color: var(--m-blue);">📞 0530 612 41 11 Hemen Ara</a>
+  <!-- TAM EKRAN MOBİL OVERLAY MENÜ -->
+  <div class="mobile-overlay-menu" id="mobileOverlay" aria-hidden="true">
+    <!-- Kapatma Butonu (Sağ Üstte Belirgin X İkonu) -->
+    <button class="overlay-close-btn" id="overlayCloseBtn" aria-label="Menüyü Kapat">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <!-- M Logo Rozet (Üst Kısım Vurgusu) -->
+    <div class="overlay-brand-badge">
+      <div class="m-dots"><span></span><span></span><span></span></div>
+      <span>M POWER GARAJ · REFİK BOZ</span>
+    </div>
+
+    <!-- Tam Ortalanmış Dikey Menü Linkleri & Butonlar -->
+    <div class="overlay-menu-content">
+      <button class="overlay-nav-btn active" data-view="hero">Ana Sayfa</button>
+      <button class="overlay-nav-btn" data-view="brands">Hizmet Verilen Markalar</button>
+      <button class="overlay-nav-btn" data-view="services">Hizmetlerimiz</button>
+      <button class="overlay-nav-btn" data-view="why">Neden Biz?</button>
+      <button class="overlay-nav-btn" data-view="media">Sosyal Medya</button>
+      <button class="overlay-nav-btn" data-view="contact">İletişim & Konum</button>
+      
+      <div class="overlay-divider"></div>
+
+      <button class="btn btn-m-action overlay-action-btn" onclick="showView('contact')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        Randevu Al
+      </button>
+      
+      <a href="tel:+905306124111" class="overlay-phone-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+        0530 612 41 11 Hemen Ara
+      </a>
+    </div>
   </div>
 </nav>
 
@@ -2079,8 +2239,8 @@ function showView(targetViewId) {
     btn.classList.toggle('active', btn.dataset.view === targetViewId);
   });
 
-  // 3. Mobil Çekmece Butonlarını Güncelle
-  document.querySelectorAll('#mobileDrawer button[data-view]').forEach(btn => {
+  // 3. Mobil Overlay Menü Butonlarının Aktifliğini Güncelle
+  document.querySelectorAll('.overlay-nav-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.view === targetViewId);
   });
 
@@ -2107,27 +2267,51 @@ document.querySelectorAll('.nav-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => showView(btn.dataset.view));
 });
 
-/* ── Mobil Menü İşlemleri ── */
+/* ── Tam Ekran Mobil Overlay Menü İşlemleri ── */
 const hamBtn = document.getElementById('hamBtn');
-const mobileDrawer = document.getElementById('mobileDrawer');
+const mobileOverlay = document.getElementById('mobileOverlay');
+const overlayCloseBtn = document.getElementById('overlayCloseBtn');
 
-function closeMobileMenu() {
-  if (mobileDrawer && hamBtn) {
-    mobileDrawer.classList.remove('open');
-    hamBtn.classList.remove('open');
+function openMobileMenu() {
+  if (mobileOverlay) {
+    mobileOverlay.classList.add('open');
+    mobileOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // Menü açıkken arka plan kaydırmasını kilitle
   }
 }
 
-if (hamBtn && mobileDrawer) {
-  hamBtn.addEventListener('click', () => {
-    const isOpen = mobileDrawer.classList.toggle('open');
-    hamBtn.classList.toggle('open', isOpen);
-  });
+function closeMobileMenu() {
+  if (mobileOverlay) {
+    mobileOverlay.classList.remove('open');
+    mobileOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+}
 
-  mobileDrawer.querySelectorAll('button[data-view]').forEach(btn => {
-    btn.addEventListener('click', () => showView(btn.dataset.view));
+if (hamBtn) {
+  hamBtn.addEventListener('click', openMobileMenu);
+}
+
+if (overlayCloseBtn) {
+  overlayCloseBtn.addEventListener('click', closeMobileMenu);
+}
+
+// Menü içindeki herhangi bir sekmeye veya butona tıklandığında menüyü kapat
+if (mobileOverlay) {
+  mobileOverlay.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showView(btn.dataset.view);
+      closeMobileMenu();
+    });
   });
 }
+
+// ESC tuşuna basıldığında menüyü kapat
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeMobileMenu();
+  }
+});
 
 /* ── Navbar Scroll Efekti ── */
 window.addEventListener('scroll', () => {
